@@ -98,10 +98,8 @@ fn main()
 
        if _args.len() >= 3{ //ファイルを編集するときのvim処理
 
+            fileio::fileio(_args[2].to_string());
             
-
-
-
         }
      }
     
