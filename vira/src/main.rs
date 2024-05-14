@@ -1,27 +1,37 @@
-pub mod test;
-
-use std::fs::File;
-use std::io;
-use std::env;
-use std::fs;
+#[allow(unused_imports)]
+pub mod insert;
+pub mod buffscrean;
+pub mod fileio;
+#[allow(unused_imports)]
+use std::{fs, io};
 use std::io::prelude::*;
-use std::io::stdin;
-use termion::event::Key;
+extern crate termion;
+#[allow(unused_imports)]
+use std::io::{stdin, stdout, Write};
+#[allow(unused_imports)]
+use termion::event::{self, Event, Key};
 use termion::input::TermRead;
-use std::sync::mpsc;
-use std::thread;
+#[allow(unused_imports)]
+use termion::raw::IntoRawMode;
+#[allow(unused_imports)]
+use crossterm::cursor::{Hide, MoveTo, Show};
+#[allow(unused_imports)]
+use crossterm::terminal::{disable_raw_mode, Clear, ClearType, EnterAlternateScreen, LeaveAlternateScreen};
+#[allow(unused_imports)]
+use crossterm::{execute, queue, style::PrintStyledContent};
+
 
 fn main()
 {
+    #[allow(unused_mut)]
+    #[allow(unused_variables)]
+    let mut insert = false;
     let _args: Vec<String> = std::env::args().collect();
+    #[allow(unused_mut)]
+    #[allow(unused_variables)]
     let mut buff:Vec<String> = vec![];
 
-    if _args.len() < 2{ // IndexOutOfBounse起きないように最初からarsgが2以上か調べる
-
-        println!("Usage: {} <command> <file>",_args[0]);
-        return;
-        
-    }else if (_args.len() >= 3 && (_args[1] == "-r" || _args[1] == "--read")) || 
+    if (_args.len() >= 3 && (_args[1] == "-r" || _args[1] == "--read")) || 
     (_args.len() >= 3 && _args[1] == "-r"){ // 読み込み・表示
  
          let filepath = _args[2].to_string();
@@ -34,8 +44,7 @@ fn main()
                  // ファイルの内容を文字列に読み込む
                  match file.read_to_string(&mut contents){
  
-                     Ok(contents) => println!("{}", contents),
- 
+                     Ok(_) => println!("{}",contents),
                      Err(_) => eprintln!("\x1b[31m\x1b[1mFailed to load file\x1b[0m\x1b[0m"),
  
                      
@@ -50,38 +59,46 @@ fn main()
          }; 
          
      }else{
-        if _args.len() >= 2{ //ここにvimの処理を入れていく
+        //ここにvimの処理を入れていく
+        buffscrean::newbuff();
+
+        let stdin = stdin();
+
+/*
+        // Rawモードにする
+        // unwrapだからエラー時にはpanicを起こす（いずれ治す）
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut stdout = stdout().into_raw_mode().unwrap();
+*/
+        buffscrean::rawmode();
+
+        for event in stdin.events(){
+
+            match event.unwrap(){
+                
+                // とりあえずctrl+cでやめれるようにする
+                Event::Key(Key::Esc) => {
+                    
+                    buffscrean::closebuff();
+                    
+                }
+                Event::Key(Key::Ctrl('c')) => {
+                    buffscrean::closebuff();
+                    return;
+                }
+
+
+                _ => {}
+                }
+
+            }
+
+
+
+       if _args.len() >= 3{ //ファイルを編集するときのvim処理
 
             
-
-
-
-
-
-        }else if _args.len() >= 3{ //ファイルを編集するときのvim処理
-
-            let filepath = _args[2].to_string();
-
-            match fs::File::open(filepath) { //ファイル読み込み。matchで失敗してもpanicを起こさないようにする。ファイルパッチは_args[2]。
-                Ok(mut str) => { //成功処理。strがファイル型になる
-                     
-                    let mut filevec = String::new(); //ファイルの中身をいれるString
-
-                    match str.read_to_string(&mut filevec){ //matchで成功と失敗を判別してpanicが起らないようにする
-
-                        Ok(filevec) => { //成功処理。filevecにファイルの内容をいれる。
-
-                            println!("{}",filevec); //ファイルの中身をprintlnで出力する。(一時的)
-                        },
-                        Err(_) => {
-
-                        },
-                    }
-                },
-                Err(_) => {
-
-                },
-            }
 
 
 
