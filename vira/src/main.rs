@@ -64,14 +64,11 @@ fn main()
 
         let stdin = stdin();
 
-/*
         // Rawモードにする
         // unwrapだからエラー時にはpanicを起こす（いずれ治す）
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut stdout = stdout().into_raw_mode().unwrap();
-*/
-        buffscrean::rawmode();
 
         for event in stdin.events(){
 

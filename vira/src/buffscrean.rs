@@ -1,8 +1,8 @@
 use std::io::{self, stdout};
-
+use crossterm::terminal::{Clear, ClearType, EnterAlternateScreen, LeaveAlternateScreen};
 use crossterm::cursor::{Hide, Show};
-use crossterm::terminal::{disable_raw_mode, Clear, ClearType, EnterAlternateScreen, LeaveAlternateScreen};
 use crossterm::execute;
+use termion::raw::IntoRawMode;
 
 pub fn newbuff() -> std::io::Result<()>{ 
     let mut stdout = stdout();
@@ -19,6 +19,6 @@ pub fn closebuff() -> io::Result<()>
 
 pub fn rawmode() -> io::Result<()>
 {
-    disable_raw_mode()?;
+    let mut stdout = stdout().into_raw_mode().unwrap();
     Ok(())
 }
