@@ -3,9 +3,6 @@ pub mod insert;
 pub mod buffscrean;
 pub mod fileio;
 pub mod memory;
-use std::ffi::OsStr;
-use std::path;
-use std::str::Matches;
 #[allow(unused_imports)]
 use std::{fs, io};
 use std::io::prelude::*;
@@ -23,28 +20,21 @@ use crossterm::cursor::{Hide, MoveTo, Show};
 use crossterm::terminal::{disable_raw_mode, Clear, ClearType, EnterAlternateScreen, LeaveAlternateScreen};
 #[allow(unused_imports)]
 use crossterm::{execute, queue, style::PrintStyledContent};
-extern crate clap;
-use clap::Parser;
+use clap::*;
 
-/// Simple program to greet a person
-#[derive(Parser, Debug)]
-#[command(author = "Pik6C")]
-#[command(version = "0.1.0")]
-#[command(about = "Terminal text editor")]
-#[command(long_about = "Terminal text editor made with Rust\ngithub repository: https://github.com/Pik6C/vira\n(MIT License)")]
-
-struct Args {
-    /// Read a file
-    #[arg(short, long)]
+/// terminal text editor vira
+#[derive(Parser)]
+struct Args{
+    /// File name to edit
+    filename: String,
+    /// Display the contents of the file
+    #[arg(short='r', long)]
     read: String
 }
-
-
 
 fn main()
 {
     let args = Args::parse();
-
     #[allow(unused_mut)]
     #[allow(unused_variables)]
     let mut insert = false;
@@ -53,8 +43,7 @@ fn main()
     #[allow(unused_variables)]
     let mut buff:Vec<String> = vec![];
     
-    if (_args.len() >= 3 && (_args[1] == "-r" || _args[1] == "--read")) || 
-    (_args.len() >= 3 && _args[1] == "-r"){ // 読み込み・表示
+    if args.read == args.read{ // 読み込み・表示
 
          match  fs::File::open(args.read){
              Ok(mut file) =>{
@@ -80,7 +69,7 @@ fn main()
          
      }else{
         //ここにvimの処理を入れていく
-        buffscrean::newbuff(); //新しいバッファを作る
+        let _ = buffscrean::newbuff(); //新しいバッファを作る
 
         let mut buffer: Vec<Vec<char>> = Vec::new();
         
@@ -100,12 +89,12 @@ fn main()
                 
                 Event::Key(Key::Esc) => {
                     
-                    buffscrean::closebuff();
+                    let _ = buffscrean::closebuff();
                     
                 }
                 // とりあえずctrl+cでやめれるようにする
                 Event::Key(Key::Ctrl('c')) => {
-                    buffscrean::closebuff();
+                    let _ = buffscrean::closebuff();
                     return;
                 }
 
