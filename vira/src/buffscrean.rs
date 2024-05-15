@@ -4,6 +4,7 @@ use crossterm::cursor::{Hide, Show};
 use crossterm::execute;
 use termion::raw::IntoRawMode;
 
+
 pub fn newbuff() -> std::io::Result<()>{ 
     let mut stdout = stdout();
     execute!(stdout, Hide, EnterAlternateScreen, Clear(ClearType::All))?;
