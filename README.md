@@ -1,7 +1,8 @@
-# vira
+# crars
+
 <br>
 
-# What is vira?
+# What is crars?
 <br>
 This is my attempt to recreate vim as accurately as possible using Rust.
 <br>
