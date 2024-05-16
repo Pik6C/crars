@@ -1,26 +1,15 @@
-#[allow(unused_imports)]
 pub mod insert;
 pub mod buffscrean;
 pub mod fileio;
 pub mod memory;
 pub mod about;
-#[allow(unused_imports)]
-use std::{fs, io};
+use std::fs;
 use std::io::prelude::*;
 extern crate termion;
-#[allow(unused_imports)]
-use std::io::{stdin, stdout, Write};
-#[allow(unused_imports)]
-use termion::event::{self, Event, Key};
+use std::io::{stdin, stdout};
+use termion::event::{Event, Key};
 use termion::input::TermRead;
-#[allow(unused_imports)]
 use termion::raw::IntoRawMode;
-#[allow(unused_imports)]
-use crossterm::cursor::{Hide, MoveTo, Show};
-#[allow(unused_imports)]
-use crossterm::terminal::{disable_raw_mode, Clear, ClearType, EnterAlternateScreen, LeaveAlternateScreen};
-#[allow(unused_imports)]
-use crossterm::{execute, queue, style::PrintStyledContent};
 use std::env::*;
 
 fn main()
@@ -60,14 +49,15 @@ fn main()
          
      }else if _args.len() == 2{ // lenが2以上のときの処理たち
 
-        if _args[1] == "-v" || _args[1] == "--version"{
+        if _args[1] == "-v" || _args[1] == "--version"{ // バージョン表示
             about::version();
             return;
-        }else if _args[1] == "-h" || _args[1] == "--help"{
+        }else if _args[1] == "-h" || _args[1] == "--help"{ // ヘルプ
             about::help(_args[0].to_string());
             return;
         }
-        fileio::fileio(_args[1].to_string());
+
+        fileio::fileio(_args[1].to_string()); // ファイル編集モード
         
     }
     
