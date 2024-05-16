@@ -3,6 +3,7 @@ pub mod insert;
 pub mod buffscrean;
 pub mod fileio;
 pub mod memory;
+pub mod about;
 #[allow(unused_imports)]
 use std::{fs, io};
 use std::io::prelude::*;
@@ -20,32 +21,22 @@ use crossterm::cursor::{Hide, MoveTo, Show};
 use crossterm::terminal::{disable_raw_mode, Clear, ClearType, EnterAlternateScreen, LeaveAlternateScreen};
 #[allow(unused_imports)]
 use crossterm::{execute, queue, style::PrintStyledContent};
-use clap::*;
-
-/// terminal text editor vira
-#[derive(Parser)]
-struct Args{
-    /// File name to edit
-    filename: String,
-    /// Display the contents of the file
-    #[arg(short='r', long)]
-    read: String
-}
+use std::env::*;
 
 fn main()
 {
-    let args = Args::parse();
+
     #[allow(unused_mut)]
     #[allow(unused_variables)]
     let mut insert = false;
-    let _args: Vec<String> = std::env::args().collect();
+    let _args: Vec<String> = args().collect();
     #[allow(unused_mut)]
     #[allow(unused_variables)]
     let mut buff:Vec<String> = vec![];
     
-    if args.read == args.read{ // 読み込み・表示
+    if (_args.len() >= 3) && (_args[1] == "--read" || _args[1] == "-r") { // 読み込み・表示
 
-         match  fs::File::open(args.read){
+         match  fs::File::open(_args[2].to_string()){
              Ok(mut file) =>{
                  // 文字列のベクターを準備
                  let mut contents = String::new();
@@ -67,11 +58,24 @@ fn main()
               
          }; 
          
-     }else{
-        //ここにvimの処理を入れていく
+     }else if _args.len() == 2{ // lenが2以上のときの処理たち
+
+        if _args[1] == "-v" || _args[1] == "--version"{
+            about::version();
+            return;
+        }else if _args[1] == "-h" || _args[1] == "--help"{
+            about::help(_args[0].to_string());
+            return;
+        }
+        fileio::fileio(_args[1].to_string());
+        
+    }
+    
+    else{
+        //ここに普通のvimの処理を入れていく
         let _ = buffscrean::newbuff(); //新しいバッファを作る
 
-        let mut buffer: Vec<Vec<char>> = Vec::new();
+        let mut _buffer: Vec<Vec<char>> = Vec::new();
         
 
         let stdin = stdin();
@@ -106,11 +110,7 @@ fn main()
 
 
 
-       if _args.len() >= 3{ //ファイルを編集するときのvim処理
-
-            fileio::fileio(_args[2].to_string());
-            
-        }
+       
      }
     
     }
