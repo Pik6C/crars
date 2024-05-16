@@ -5,13 +5,13 @@ use colored::*;
 /// バージョンを表示します
 pub fn version()
 {
-    println!("{}","vira".bright_yellow());
+    println!("{}","vira".color("blue").bold());
     println!("{}{}","version:".bright_yellow(),"0.1.0");
 }
 
 /// ヘルプを表示します
 pub fn help(ぬ:String){
-    println!("\n{} {}","terminal text editor".green().bold(),"vira".color("blue").bold());
+    println!("\n{} {}","terminal text editor".bright_cyan(),"vira".color("blue").bold());
     println!("{}{} [arguments] [file]\n","Usage:".yellow(),ぬ);
     println!("  or {} [file]",ぬ);
     println!("      (Loads the specified file and launches a text editor to edit it.)\n");

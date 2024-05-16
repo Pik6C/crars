@@ -3,15 +3,17 @@ pub mod buffscrean;
 pub mod fileio;
 pub mod memory;
 pub mod about;
+pub mod draw;
 use std::fs;
 use std::io::prelude::*;
 extern crate termion;
-use std::io::{stdin, stdout};
+use termion::cursor::DetectCursorPos;
 use termion::event::{Event, Key};
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
 use std::env::*;
-
+use std::io::{stdin, stdout, Write};
+use termion::cursor;
 fn main()
 {
 
@@ -75,6 +77,14 @@ fn main()
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut stdout = stdout().into_raw_mode().unwrap();
+        
+        let _ = draw::draw1();
+         // カーソルを左上に設定する(1-indexed)
+        let _ = write!(stdout, "{}", cursor::Goto(1, 1));
+
+        stdout.flush().unwrap();
+
+
 
         for event in stdin.events(){
 
@@ -97,10 +107,7 @@ fn main()
                 }
 
             }
-
-
-
-       
-     }
+        
+        }
     
     }
